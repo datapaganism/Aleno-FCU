@@ -15,12 +15,13 @@
       margin: 1rem;
       background-color: black;
       color: white;
-      font-size: 1rem;
+      font-size: 10px;
     }
 
     .datatext {
       width: 4rem;
       font-size: 1.2rem;
+      text-align: left;
     }
 
     .headingtext {
@@ -49,7 +50,7 @@
 
     .boxed label {
       padding: 0.3rem;
-      border: solid 2px #ccc;
+      border: solid 0.2rem lightgray;
       width: 2em;
     }
 
@@ -66,11 +67,15 @@
     .boxed input[type="radio"]:checked+label {
       border: solid 0.2rem green;
       background-color: darkgreen;
+      color: white;
     }
 
     .mode-switch label {
       width: auto;
       justify-content: center;
+      font-size: 1rem;
+      background-color: white;
+      color: black;
     }
 
     .mode-switch {
@@ -86,15 +91,25 @@
 
     button {
       padding: 0.3rem;
-      border: solid 2px #ccc;
+      border: solid 0.2rem lightgray;
       min-width: 2rem;
-      font-size: 0.9rem;
+      font-size: 1rem;
     }
 
     select {
+      border: solid 0.2rem lightgray;
       border-radius: 0;
       padding: 0.3rem;
-      font-size: 0.9rem;
+      font-size: 1rem;
+    }
+
+    #burstcount-text {
+      text-align: center;
+    }
+
+    #firerate-text {
+      width: 4.5rem;
+      text-align: center;
     }
   </style>
 </head>
@@ -204,7 +219,7 @@
 
   <script>
 
-    var prefix = "http://192.168.0.97";
+    var prefix = "http://alenofcu.local";
 
     function sendSaveConfig() {
       var xhr = new XMLHttpRequest();
@@ -254,17 +269,21 @@
       getAndSet('firerate', 'firerate-text');
       getAndSet('dwell-minus', 'dwell-text');
       getAndSet('delay-minus', 'delay-text');
-      getAndSet('rpmtarget-minus', 'rpmtarget-text');
+      getAndSet('rpmtarget-minus', 'rpmtarget-text', true);
       getAndSet('burstcount-minus', 'burstcount-text');
     }
 
-    function getAndSet(to, output_id) {
+    function getAndSet(to, output_id, truncate) {
       var xhr = new XMLHttpRequest();
 
       xhr.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
           console.log(this.responseText);
-          document.getElementById(output_id).innerHTML = this.responseText;
+          var out = this.responseText;
+          if (truncate == true) {
+            out = parseInt(out);
+          }
+          document.getElementById(output_id).innerHTML = out;
         }
       };
       xhr.open("GET", prefix + "/" + to, true);
